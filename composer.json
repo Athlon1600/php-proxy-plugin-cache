@@ -4,6 +4,11 @@
 	"homepage": "https://www.php-proxy.com/",
 	"type": "library",
 	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"Proxy\\Plugin\\": ""
+		}
+	},
 	"require": {
 		"predis/predis": "~1.0"
 	}
