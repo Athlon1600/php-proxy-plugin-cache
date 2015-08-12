@@ -16,6 +16,8 @@ Start the server if not already started
 /etc/init.d/redis-server start
 ```
 
+Find the **composer.json** file in your proxy directory, and add this package as one of its requirements:  
+
 ```json
 "require": {
 	"athlon1600/php-proxy": "@dev",
@@ -23,19 +25,38 @@ Start the server if not already started
 },
 ```
 
-LRU-Cache
+Install the new composer package:  
 
-http://redis.io/topics/lru-cache
+```shell
+composer update
+```
 
-By default storage in redis can overload your server's memory since by default max memory is zero
+Final step, find the **config.php** file in that same directory, and add **Cache** to the list of plugins
+to be loaded.
+
+```php
+$config['plugins'] = array(
+	'Cache', // <--- new plugin
+	'HeaderRewrite',
+	'Stream',
+	.....
+);
+```
+Cache plugin has to be loaded first, so must appear **first in the list** otherwise it won't work.
+
+#### Redis Configuration
+
+By default, Redis is configured to store everything it's being sent, however on a busy proxy that tends
+to overload the memory with all those caches files. For best performance, adjust redis memory settings and set appropriate key eviction policy. This should be good enough on a server with 1 GB ram:
 
 
-[php-proxy-app](https://github.com/Athlon1600/php-proxy-app)
+	root@uk1:/# redis-cli
+	127.0.0.1:6379> config set maxmemory 300000000
+	OK
+	127.0.0.1:6379> config set maxmemory-policy volatile-lru
+	OK
+	127.0.0.1:6379>
 
-**composer.json**
 
-edit the **require** block of configuration parameters
 
-![require](http://i.imgur.com/uYepBbW.png)
 
-##  Configuration fo r"
